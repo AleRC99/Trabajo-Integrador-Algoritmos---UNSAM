@@ -8,6 +8,7 @@ PShape avion;
 float playerX, playerY;
 float velocidad = 4.0;
 float gridOffset = 0.0;
+boolean left, right, up, down;
 
 void setup() {
   size(600, 800);
@@ -23,7 +24,7 @@ void setup() {
 
 void draw() {
   fondoOceano();
-  manejarEntrada();
+  moverJugador();
   
   // Renderizado del jugador
   pushMatrix();
@@ -123,16 +124,33 @@ PShape crearSuperEtendard() {
 // ---------------------------------------------------------
 // 2. LÓGICA DE JUEGO (Game Loop)
 // ---------------------------------------------------------
-void manejarEntrada() {
-  if (keyPressed) {
-    if (keyCode == LEFT  || key == 'a') playerX -= velocidad;
-    if (keyCode == RIGHT || key == 'd') playerX += velocidad;
-    if (keyCode == UP    || key == 'w') playerY -= velocidad;
-    if (keyCode == DOWN  || key == 's') playerY += velocidad;
-  }
-  // Limitar movimiento a la pantalla (Invariante del juego)
+
+void moverJugador() {
+
+  if (left)  playerX -= velocidad;
+  if (right) playerX += velocidad;
+  if (up)    playerY -= velocidad;
+  if (down)  playerY += velocidad;
+
+  // Limites
   playerX = constrain(playerX, 50, width - 50);
   playerY = constrain(playerY, 80, height - 60);
+}
+
+void keyPressed() {
+
+  if (keyCode == LEFT || key == 'a')  left = true;
+  if (keyCode == RIGHT || key == 'd') right = true;
+  if (keyCode == UP || key == 'w')    up = true;
+  if (keyCode == DOWN || key == 's')  down = true;
+}
+
+void keyReleased() {
+
+  if (keyCode == LEFT || key == 'a')  left = false;
+  if (keyCode == RIGHT || key == 'd') right = false;
+  if (keyCode == UP || key == 'w')    up = false;
+  if (keyCode == DOWN || key == 's')  down = false;
 }
 
 void animarMotor() {
