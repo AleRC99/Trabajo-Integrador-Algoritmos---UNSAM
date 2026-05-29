@@ -5,8 +5,8 @@ import processing.core.PImage;
 
 public class SE_Nave extends SE_Objeto {
   protected boolean yendoDerecha, yendoIzquierda, yendoArriba, yendoAbajo;
-  protected float powerUpTimer = 0;
-  protected boolean isDoubleShot = false;
+  // protected float powerUpTimer = 0;
+  // protected boolean isDoubleShot = false;
   protected boolean disparando = false;
   protected int cooldown = 0;
   
@@ -17,12 +17,14 @@ public class SE_Nave extends SE_Objeto {
     this.alto = 30;
   }
 
+/*
   public void activarMejora() {
     powerUpTimer = 600; // 10 segundos
     isDoubleShot = true;
   }
   
   public boolean hasDoubleShot() { return isDoubleShot; }
+*/
   public void setDisparando(boolean v) { disparando = v; }
 
   public void setYendoDerecha(boolean v) { yendoDerecha = v; }
@@ -34,10 +36,12 @@ public class SE_Nave extends SE_Objeto {
   public void actualizar() {
     PApplet app = gestor.gp.getApp();
     float velActual = velocidad;
+/*
     if (powerUpTimer > 0) {
       powerUpTimer--;
       if (powerUpTimer <= 0) isDoubleShot = false; // Fin de PowerUp
     }
+*/
 
     if (yendoDerecha && x < app.width - 20) x += velActual;
     if (yendoIzquierda && x > 20) x -= velActual;
@@ -55,12 +59,14 @@ public class SE_Nave extends SE_Objeto {
   public void disparar() {
     if (disparando && cooldown == 0) {
       cooldown = 10;
+/*
       if (isDoubleShot) {
         gestor.agregarProyectil(new SE_Proyectil(gestor, x - 12, y - 10, true));
         gestor.agregarProyectil(new SE_Proyectil(gestor, x + 12, y - 10, true));
       } else {
+*/
         gestor.agregarProyectil(new SE_Proyectil(gestor, x, y - 10, true));
-      }
+//      }
     }
   }
 
@@ -71,14 +77,15 @@ public class SE_Nave extends SE_Objeto {
     app.translate(x, y);
     PImage sprite = (gfx != null) ? gfx.getImagen("Nave") : null;
     if (sprite != null) {
-      if (powerUpTimer > 0) app.tint(150, 255, 150);
-      else app.tint(200, 220, 255);
+      // if (powerUpTimer > 0) app.tint(150, 255, 150);
+      // else app.tint(200, 220, 255);
+      app.tint(200, 220, 255);
       
       gfx.dibujarConBorde(sprite, 0, 0, app.color(255));
       app.noTint();
     } else {
       app.fill(app.color(100, 150, 255));
-      if (powerUpTimer > 0) app.fill(150, 255, 150);
+      // if (powerUpTimer > 0) app.fill(150, 255, 150);
       app.rect(-15, -15, 30, 30);
     }
     app.popMatrix();

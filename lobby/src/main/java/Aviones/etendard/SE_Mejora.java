@@ -2,6 +2,7 @@ package Aviones.etendard;
 
 import processing.core.PApplet;
 
+/*
 public class SE_Mejora extends SE_Objeto {
   private int tipo;
 
@@ -29,3 +30,4 @@ public class SE_Mejora extends SE_Objeto {
 
   public int getTipo() { return tipo; }
 }
+*/

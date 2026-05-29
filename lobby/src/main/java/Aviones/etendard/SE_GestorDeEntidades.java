@@ -7,14 +7,14 @@ public class SE_GestorDeEntidades {
   private ArrayList<SE_Nave>     listaNaves;
   private ArrayList<SE_Enemigo>  listaEnemigos;
   private ArrayList<SE_Proyectil> listaProyectiles;
-  private ArrayList<SE_Mejora>   listaMejoras;
+  // private ArrayList<SE_Mejora>   listaMejoras;
   private ArrayList<SE_Enemigo>  escuadronRojoActivo;
 
   public SE_GestorDeEntidades(SE_GestorPrincipal gp) {
     this.gp = gp;
     listaNaves        = new ArrayList<SE_Nave>();
     listaProyectiles  = new ArrayList<SE_Proyectil>();
-    listaMejoras      = new ArrayList<SE_Mejora>();
+    // listaMejoras      = new ArrayList<SE_Mejora>();
     listaEnemigos     = new ArrayList<SE_Enemigo>();
     escuadronRojoActivo = new ArrayList<SE_Enemigo>();
   }
@@ -22,7 +22,7 @@ public class SE_GestorDeEntidades {
   public void vaciarTodo() {
     listaNaves.clear();
     listaProyectiles.clear();
-    listaMejoras.clear();
+    // listaMejoras.clear();
     listaEnemigos.clear();
     escuadronRojoActivo.clear();
   }
@@ -96,6 +96,7 @@ public class SE_GestorDeEntidades {
       if (!p.isVivo()) listaProyectiles.remove(i);
     }
 
+/*
     for (int i = listaMejoras.size() - 1; i >= 0; i--) {
       SE_Mejora m = listaMejoras.get(i);
       if (!pausado) m.actualizar();
@@ -109,6 +110,7 @@ public class SE_GestorDeEntidades {
       }
       if (!m.isVivo()) listaMejoras.remove(i);
     }
+*/
 
     for (SE_Nave n : listaNaves) {
       if (n.isVivo()) { 
@@ -132,13 +134,13 @@ public class SE_GestorDeEntidades {
        gp.ganarPartida();
     }
     
-    SE_Mejora m = e.soltarMejora();
-    if (m != null) listaMejoras.add(m);
+    // SE_Mejora m = e.soltarMejora();
+    // if (m != null) listaMejoras.add(m);
     
     if (escuadronRojoActivo.contains(e)) {
        escuadronRojoActivo.remove(e);
        if (escuadronRojoActivo.isEmpty()) {
-          listaMejoras.add(new SE_Mejora(this, e.getX(), e.getY(), 1));
+          // listaMejoras.add(new SE_Mejora(this, e.getX(), e.getY(), 1));
           if (gp != null) gp.addScore(500);
        }
     }

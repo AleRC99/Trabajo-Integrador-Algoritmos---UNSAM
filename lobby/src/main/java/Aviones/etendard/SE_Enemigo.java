@@ -54,6 +54,7 @@ public class SE_Enemigo extends SE_Objeto {
     if (hp <= 0) vivo = false;
   }
 
+/*
   public SE_Mejora soltarMejora() {
     PApplet app = gestor.gp.getApp();
     if (app.random(1) < 0.2f) {
@@ -61,6 +62,7 @@ public class SE_Enemigo extends SE_Objeto {
     }
     return null;
   }
+*/
 
   public void disparar() {
     PApplet app = gestor.gp.getApp();
