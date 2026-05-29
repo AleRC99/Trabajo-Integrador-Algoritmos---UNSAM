@@ -1,0 +1,30 @@
+package Contrato;
+
+/**
+ * Datos que el Home le pasa al modulo antes de iniciar.
+ * Es inmutable: solo tiene getters.
+ */
+public class ContextoJuego {
+
+    private final String nombreJugador;
+    private final int anchoPantalla;
+    private final int altoPantalla;
+
+    public ContextoJuego(String nombreJugador, int anchoPantalla, int altoPantalla) {
+        this.nombreJugador = nombreJugador;
+        this.anchoPantalla = anchoPantalla;
+        this.altoPantalla = altoPantalla;
+    }
+
+    public String getNombreJugador() {
+        return nombreJugador;
+    }
+
+    public int getAnchoPantalla() {
+        return anchoPantalla;
+    }
+
+    public int getAltoPantalla() {
+        return altoPantalla;
+    }
+}
