@@ -9,6 +9,9 @@ Estructura esperada del repo:
   repo/
   ├── contracts/       ← interfaces y contratos (ModuloJuego, etc.)
   ├── lobby/           ← clases del Home (HomeJuego, Gestores, UI...)
+  ├── assets/
+  │   └── fonts/
+  │       └── PressStart2P-Regular.ttf
   ├── modulos/
   │   ├── skyhawk/
   │   │   ├── ModuloSkyhawk.java
@@ -38,7 +41,7 @@ REPO_ROOT     = Path(__file__).parent           # carpeta donde está el script
 CONTRACTS_DIR = REPO_ROOT / "contracts"
 LOBBY_DIR     = REPO_ROOT / "lobby"
 MODULOS_DIR   = REPO_ROOT / "modulos"
-DATA_DIR      = REPO_ROOT / "data"
+ASSETS_DIR    = REPO_ROOT / "assets"
 PDE_FILE      = REPO_ROOT / "Game1982.pde"
 EXPORT_DIR    = REPO_ROOT / "processing-export" / "Game1982"
 
@@ -70,25 +73,27 @@ def copiar_java(src: Path, dest_dir: Path, dry_run: bool, etiqueta: str = ""):
     return True
 
 
-def copiar_datos(src_data: Path, dest_data: Path, dry_run: bool, modulo: str):
-    """Copia assets de modulos/<modulo>/data/ a processing-export/Game1982/data/."""
-    if not src_data.exists():
+def copiar_recursos(src_dir: Path, dest_dir: Path, dry_run: bool, etiqueta: str):
+    """Copia recursos preservando la estructura interna de carpetas."""
+    if not src_dir.exists():
         return
-    dest_data.mkdir(parents=True, exist_ok=True)
-    archivos = list(src_data.rglob("*"))
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    archivos = list(src_dir.rglob("*"))
     assets = [f for f in archivos if f.is_file()]
     if not assets:
         return
     for asset in assets:
-        dest = dest_data / asset.name
+        relative = asset.relative_to(src_dir)
+        dest = dest_dir / relative
         if dest.exists() and dest.read_bytes() == asset.read_bytes():
-            info(f"  sin cambios   data/{asset.name}  {GRAY}({modulo}){RESET}")
+            info(f"  sin cambios   {dest_dir.name}/{relative}  {GRAY}({etiqueta}){RESET}")
             continue
         if dry_run:
-            info(f"  copiaría      data/{asset.name}  {GRAY}({modulo}){RESET}")
+            info(f"  copiaría      {dest_dir.name}/{relative}  {GRAY}({etiqueta}){RESET}")
             continue
+        dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(asset, dest)
-        ok(f"  data/{asset.name}  {GRAY}({modulo}){RESET}")
+        ok(f"  {dest_dir.name}/{relative}  {GRAY}({etiqueta}){RESET}")
 
 
 def detectar_conflictos(javas: list[Path]) -> list[str]:
@@ -106,7 +111,7 @@ def detectar_conflictos(javas: list[Path]) -> list[str]:
 def validar_estructura():
     """Verifica que existan las carpetas mínimas esperadas."""
     faltantes = []
-    for d in [CONTRACTS_DIR, LOBBY_DIR, MODULOS_DIR]:
+    for d in [CONTRACTS_DIR, LOBBY_DIR]:
         if not d.exists():
             faltantes.append(str(d.relative_to(REPO_ROOT)))
     if not PDE_FILE.exists():
@@ -188,26 +193,27 @@ def exportar(modulos_filtro: list[str] | None, dry_run: bool):
                 continue
             for java in javas:
                 copiar_java(java, EXPORT_DIR, dry_run, m)
-            copiar_datos(modulo_dir / "data", EXPORT_DIR / "data", dry_run, m)
+            copiar_recursos(modulo_dir / "data", EXPORT_DIR / "data", dry_run, m)
     else:
         warn("No se exportó ningún módulo (no hay módulos o el filtro no coincidió)")
 
-    if DATA_DIR.exists():
-        head("Copiando data/ raíz...")
-        copiar_datos(DATA_DIR, EXPORT_DIR / "data", dry_run, "data")
+    if ASSETS_DIR.exists():
+        head("Copiando assets/ raíz...")
+        copiar_recursos(ASSETS_DIR, EXPORT_DIR / "assets", dry_run, "assets")
 
     lobby_data = LOBBY_DIR / "data"
     if lobby_data.exists():
         head("Copiando data/ del lobby...")
-        copiar_datos(lobby_data, EXPORT_DIR / "data", dry_run, "lobby")
+        copiar_recursos(lobby_data, EXPORT_DIR / "data", dry_run, "lobby")
 
     head("Resumen")
     if not dry_run:
         javas_en_export = list(EXPORT_DIR.glob("*.java"))
         assets_en_export = list((EXPORT_DIR / "data").rglob("*"))
+        assets_en_export += list((EXPORT_DIR / "assets").rglob("*"))
         assets_en_export = [f for f in assets_en_export if f.is_file()]
         ok(f"{len(javas_en_export)} archivos .java en processing-export/Game1982/")
-        ok(f"{len(assets_en_export)} assets en processing-export/Game1982/data/")
+        ok(f"{len(assets_en_export)} assets en processing-export/Game1982/")
         print()
         print(f"  {BOLD}Abrir desde Processing IDE:{RESET}")
         print(f"  {GRAY}{EXPORT_DIR}/Game1982.pde{RESET}")
