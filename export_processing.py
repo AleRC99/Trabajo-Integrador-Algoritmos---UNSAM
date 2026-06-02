@@ -37,7 +37,6 @@ from pathlib import Path
 REPO_ROOT     = Path(__file__).parent           # carpeta donde está el script
 CONTRACTS_DIR = REPO_ROOT / "contracts"
 LOBBY_DIR     = REPO_ROOT / "lobby"
-MODULES_DIR   = REPO_ROOT / "modules"
 MODULOS_DIR   = REPO_ROOT / "modulos"
 DATA_DIR      = REPO_ROOT / "data"
 PDE_FILE      = REPO_ROOT / "Game1982.pde"
@@ -72,7 +71,7 @@ def copiar_java(src: Path, dest_dir: Path, dry_run: bool, etiqueta: str = ""):
 
 
 def copiar_datos(src_data: Path, dest_data: Path, dry_run: bool, modulo: str):
-    """Copia assets de modules/<modulo>/data/ a processing-export/Game1982/data/."""
+    """Copia assets de modulos/<modulo>/data/ a processing-export/Game1982/data/."""
     if not src_data.exists():
         return
     dest_data.mkdir(parents=True, exist_ok=True)
@@ -107,29 +106,19 @@ def detectar_conflictos(javas: list[Path]) -> list[str]:
 def validar_estructura():
     """Verifica que existan las carpetas mínimas esperadas."""
     faltantes = []
-    for d in [CONTRACTS_DIR, LOBBY_DIR]:
+    for d in [CONTRACTS_DIR, LOBBY_DIR, MODULOS_DIR]:
         if not d.exists():
             faltantes.append(str(d.relative_to(REPO_ROOT)))
-    if not MODULES_DIR.exists() and not MODULOS_DIR.exists():
-        faltantes.append("modulos/ o modules/")
     if not PDE_FILE.exists():
         faltantes.append("Game1982.pde")
     return faltantes
 
 
-def carpeta_modulos():
-    """Usa modulos/ si existe; mantiene compatibilidad con modules/."""
-    if MODULOS_DIR.exists():
-        return MODULOS_DIR
-    return MODULES_DIR
-
-
 def listar_modulos():
-    """Devuelve los módulos disponibles."""
-    base = carpeta_modulos()
-    if not base.exists():
+    """Devuelve los módulos disponibles en modulos/."""
+    if not MODULOS_DIR.exists():
         return []
-    return [d.name for d in sorted(base.iterdir()) if d.is_dir()]
+    return [d.name for d in sorted(MODULOS_DIR.iterdir()) if d.is_dir()]
 
 
 def exportar(modulos_filtro: list[str] | None, dry_run: bool):
@@ -152,9 +141,8 @@ def exportar(modulos_filtro: list[str] | None, dry_run: bool):
     javas_lobby     = sorted(LOBBY_DIR.glob("*.java"))
 
     modulos_disponibles = listar_modulos()
-    base_modulos = carpeta_modulos()
     if not modulos_disponibles:
-        warn(f"No se encontraron módulos en {base_modulos.name}/")
+        warn("No se encontraron módulos en modulos/")
     
     modulos_a_exportar = []
     for m in modulos_disponibles:
@@ -164,11 +152,11 @@ def exportar(modulos_filtro: list[str] | None, dry_run: bool):
     if modulos_filtro:
         no_encontrados = [m for m in modulos_filtro if m not in modulos_disponibles]
         for m in no_encontrados:
-            warn(f"Módulo '{m}' no encontrado en {base_modulos.name}/ — ignorado")
+            warn(f"Módulo '{m}' no encontrado en modulos/ — ignorado")
 
     javas_modulos = []
     for m in modulos_a_exportar:
-        javas_modulos += sorted((base_modulos / m).glob("*.java"))
+        javas_modulos += sorted((MODULOS_DIR / m).glob("*.java"))
 
     todos = javas_contracts + javas_lobby + javas_modulos
     conflictos = detectar_conflictos(todos)
@@ -193,7 +181,7 @@ def exportar(modulos_filtro: list[str] | None, dry_run: bool):
     if modulos_a_exportar:
         head(f"Copiando módulos: {', '.join(modulos_a_exportar)}")
         for m in modulos_a_exportar:
-            modulo_dir = base_modulos / m
+            modulo_dir = MODULOS_DIR / m
             javas = sorted(modulo_dir.glob("*.java"))
             if not javas:
                 warn(f"  [{m}] no tiene archivos .java")
@@ -278,14 +266,13 @@ Ejemplos:
 
     if args.list:
         modulos = listar_modulos()
-        base_modulos = carpeta_modulos()
         if modulos:
-            head(f"Módulos disponibles en {base_modulos.name}/:")
+            head("Módulos disponibles en modulos/:")
             for m in modulos:
-                javas = list((base_modulos / m).glob("*.java"))
+                javas = list((MODULOS_DIR / m).glob("*.java"))
                 info(f"  {m}  {GRAY}({len(javas)} .java){RESET}")
         else:
-            warn(f"No se encontraron módulos en {base_modulos.name}/")
+            warn("No se encontraron módulos en modulos/")
         return
 
     if args.clean:
