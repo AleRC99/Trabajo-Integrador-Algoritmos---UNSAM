@@ -15,12 +15,12 @@ public class PantallaInicio {
 
     // título principal
     app.fill(255);
-    app.textSize(56);
+    app.textSize(72);
     app.textAlign(PApplet.CENTER, PApplet.CENTER);
     app.text("1982", app.width / 2f, app.height * 0.22f);
 
     app.fill(255);
-    app.textSize(18);
+    app.textSize(24);
     app.text("GUERRA DE MALVINAS", app.width / 2f, app.height * 0.33f);
 
     // línea decorativa
@@ -29,7 +29,7 @@ public class PantallaInicio {
     app.line(50, app.height * 0.40f, app.width - 50, app.height * 0.40f);
 
     app.fill(255);
-    app.textSize(13);
+    app.textSize(15);
     app.text("UN SHOOTER AEREO DEL CONFLICTO DEL ATLANTICO SUR", app.width / 2f, app.height * 0.48f);
 
     botonStart.dibujar(app);

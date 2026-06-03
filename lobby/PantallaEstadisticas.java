@@ -15,7 +15,7 @@ public class PantallaEstadisticas {
     app.background(0);
 
     app.fill(255);
-    app.textSize(16);
+    app.textSize(22);
     app.textAlign(PApplet.CENTER, PApplet.CENTER);
     app.text("ESTADISTICAS", app.width / 2f, app.height * 0.10f);
 
@@ -25,13 +25,13 @@ public class PantallaEstadisticas {
 
     if (estadisticas == null || estadisticas.isEmpty()) {
       app.fill(255);
-      app.textSize(9);
+      app.textSize(12);
       app.textAlign(PApplet.CENTER, PApplet.CENTER);
       app.text("SIN DATOS AUN", app.width / 2f, app.height * 0.45f);
     } else {
       float startY = app.height * 0.22f;
-      float rowH = 68;
-      app.textSize(8);
+      float rowH = 78;
+      app.textSize(10);
 
       for (int i = 0; i < estadisticas.size(); i++) {
         EstadisticasGenerales s = estadisticas.get(i);
@@ -57,7 +57,7 @@ public class PantallaEstadisticas {
     app.stroke(0, 120, 0);
     app.line(50, app.height * 0.80f, app.width - 50, app.height * 0.80f);
     app.fill(255);
-    app.textSize(10);
+    app.textSize(13);
     app.textAlign(PApplet.CENTER, PApplet.CENTER);
     app.text("PUNTAJE TOTAL DEL CURSO: " + puntajeTotal, app.width / 2f, app.height * 0.84f);
 

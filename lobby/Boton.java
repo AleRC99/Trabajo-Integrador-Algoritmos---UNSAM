@@ -26,6 +26,7 @@ public class Boton {
     app.rect(x, y, ancho, alto, 3);
 
     app.fill(255);
+    app.textSize(12);
     app.textAlign(PApplet.LEFT, PApplet.CENTER);
     if (seleccionado) {
       app.text("> " + texto, x + 10, y + alto / 2);

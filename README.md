@@ -91,8 +91,9 @@ Game1982.pde                     <- punto de entrada (Processing IDE)
 ├── Modulo de prueba
 │   └── ModuloPrueba.java        <- modulo de prueba removible (ver abajo)
 │
-└── data/
-    └── PressStart2P-Regular.ttf <- fuente pixel art
+└── assets/
+    └── fonts/
+        └── PressStart2P-Regular.ttf <- fuente pixel art
 ```
 
 ---

@@ -99,7 +99,7 @@ PantallaSeleccion.java
 PantallaEstadisticas.java
 HomeJuego.java                   <- orquestador principal
 ModuloPrueba.java                <- modulo de prueba (removible)
-data/                            <- fuente pixel art
+assets/fonts/                    <- fuente pixel art
 ```
 
 ---
@@ -108,7 +108,7 @@ data/                            <- fuente pixel art
 
 | Problema | Solución |
 |----------|----------|
-| Pantalla negra sin texto | Verificar que data/PressStart2P-Regular.ttf existe |
+| Pantalla negra sin texto | Verificar que assets/fonts/PressStart2P-Regular.ttf existe |
 | El juego no cierra | Cerrar la ventana con la X |
 | ESC no funciona | Hacer clic primero en la ventana del juego |
 | Error al guardar estadísticas | Verificar que Processing tiene permisos de escritura en la carpeta del sketch |
