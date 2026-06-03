@@ -1,4 +1,3 @@
-package Aviones.etendard;
 
 import processing.core.PApplet;
 

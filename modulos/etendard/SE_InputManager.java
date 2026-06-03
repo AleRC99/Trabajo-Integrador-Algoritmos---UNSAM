@@ -1,6 +1,4 @@
-package Aviones.etendard;
 
-import Contrato.EstadoJuego;
 import processing.core.PApplet;
 
 /**
@@ -19,7 +17,7 @@ public class SE_InputManager {
         String nombre = estadoActual.getNombre();
 
         switch (nombre) {
-            case "NO_INICIADO":
+            case "INICIANDO":
                 if (k == 'w' || k == 'W') gp.setSelNivel(2);
                 if (k == 'e' || k == 'E') gp.setSelNivel(3);
                 if (k == ' ') gp.initGame();

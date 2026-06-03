@@ -1,13 +1,6 @@
-package Aviones.etendard;
 
 import processing.core.PApplet;
 import processing.data.IntDict;
-import Contrato.ModuloJuego;
-import Contrato.ContextoJuego;
-import Contrato.EstadoJuego;
-import Home.EstadisticasGenerales;
-import Home.IModuloObserver;
-import Home.ModuloEvento;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +50,7 @@ public class SE_GestorPrincipal implements ModuloJuego {
     private final List<IModuloObserver> observers;
 
     // Estado del ciclo de vida según el contrato del lobby
-    private Contrato.EstadoJuego estadoCicloVida;
+    private EstadoJuego estadoCicloVida;
 
     // Instancia de PApplet para Processing
     private final PApplet app;
@@ -65,7 +58,7 @@ public class SE_GestorPrincipal implements ModuloJuego {
     public SE_GestorPrincipal(PApplet app) {
         this.app = app;
         this.observers = new ArrayList<>();
-        this.estadoCicloVida = new Contrato.NoIniciadoState();
+        this.estadoCicloVida = new NoIniciadoState();
 
         // Inicializar componentes desacoplados
         this.historial = new SE_HistorialSesion();
@@ -81,6 +74,9 @@ public class SE_GestorPrincipal implements ModuloJuego {
 
         // Carga de imágenes específicas del nivel y del lobby delegada al gestor gráfico
         this.graficos.cargarRecursos();
+
+        // Registrar eventos de teclado en Processing directamente, ya que el lobby no los delega
+        this.app.registerMethod("keyEvent", this);
     }
 
     // ── Contrato ModuloJuego ────────────────────────────────
@@ -108,7 +104,7 @@ public class SE_GestorPrincipal implements ModuloJuego {
 
     @Override
     public void iniciar() {
-        this.estadoCicloVida = new Contrato.NoIniciadoState();
+        this.estadoCicloVida = new IniciandoState();
         this.historial = new SE_HistorialSesion();
         this.statsGenerales = getEstadisticasGenerales();
         notificar(ModuloEvento.Tipo.INICIADO, "Módulo iniciado");
@@ -116,19 +112,19 @@ public class SE_GestorPrincipal implements ModuloJuego {
 
     @Override
     public void pausar() {
-        this.estadoCicloVida = new Contrato.PausadoState();
+        this.estadoCicloVida = new PausadoState();
         notificar(ModuloEvento.Tipo.PAUSADO, "Juego pausado");
     }
 
     @Override
     public void reanudar() {
-        this.estadoCicloVida = new Contrato.EnEjecucionState();
+        this.estadoCicloVida = new EnEjecucionState();
         notificar(ModuloEvento.Tipo.REANUDADO, "Juego reanudado");
     }
 
     @Override
     public void finalizar() {
-        this.estadoCicloVida = new Contrato.FinalizadoState();
+        this.estadoCicloVida = new FinalizadoState();
         System.out.println("[SE_GestorPrincipal] Módulo finalizado.");
     }
 
@@ -157,8 +153,35 @@ public class SE_GestorPrincipal implements ModuloJuego {
 
     // ── Métodos para la ejecución interceptada desde el Home ────────────────────────
 
-    public void actualizarYDibujar() {
+    @Override
+    public void actualizar(PApplet app) {
+        // La actualización lógica se hace dentro de renderizarSegunEstado por ahora
+    }
+
+    @Override
+    public void dibujar(PApplet app) {
         graficos.renderizarSegunEstado(estadoCicloVida);
+    }
+
+    @Override
+    public void reset() {
+        // La inicialización real ocurre cuando el usuario presiona ESPACIO en el menú (initGame)
+    }
+
+    // Método invocado automáticamente por Processing para delegar los eventos de teclado
+    public void keyEvent(processing.event.KeyEvent event) {
+        if (estadoCicloVida instanceof NoIniciadoState || estadoCicloVida instanceof FinalizadoState) {
+            return; // Ignorar teclas si no somos el módulo activo
+        }
+
+        char k = event.getKey();
+        int kCode = event.getKeyCode();
+        
+        if (event.getAction() == processing.event.KeyEvent.PRESS) {
+            procesarKeyPressed(k, kCode);
+        } else if (event.getAction() == processing.event.KeyEvent.RELEASE) {
+            procesarKeyReleased(k, kCode);
+        }
     }
 
     public void procesarKeyPressed(char k, int kCode) {
@@ -176,23 +199,23 @@ public class SE_GestorPrincipal implements ModuloJuego {
         historial.iniciarNuevaPartida();
         nivel.resetear();
 
-        estadoCicloVida = new Contrato.EnEjecucionState();
+        estadoCicloVida = new EnEjecucionState();
 
         entidades.agregarNave(new SE_Nave(entidades, app.width / 2.0f, 500));
     }
 
     public void ganarPartida() {
-        if (estadoCicloVida instanceof Contrato.FinalizadoState) return; // Guard
+        if (estadoCicloVida instanceof FinalizadoState) return; // Guard
         
         consolidarPartida(true);
-        estadoCicloVida = new Contrato.FinalizadoState();
+        estadoCicloVida = new FinalizadoState();
     }
 
     public void perderPartida() {
-        if (estadoCicloVida instanceof Contrato.FinalizadoState) return; // Guard
+        if (estadoCicloVida instanceof FinalizadoState) return; // Guard
         
         consolidarPartida(false);
-        estadoCicloVida = new Contrato.FinalizadoState();
+        estadoCicloVida = new FinalizadoState();
     }
 
     private void consolidarPartida(boolean gano) {
@@ -203,7 +226,7 @@ public class SE_GestorPrincipal implements ModuloJuego {
     }
 
     public void volverAlMenu() {
-        estadoCicloVida = new Contrato.NoIniciadoState();
+        estadoCicloVida = new IniciandoState();
     }
 
     public void volverAlLobby() {

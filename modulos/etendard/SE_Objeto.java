@@ -1,4 +1,3 @@
-package Aviones.etendard;
 
 public class SE_Objeto {
   protected SE_GestorDeEntidades gestor;

@@ -1,8 +1,6 @@
-package Aviones.etendard;
 
 import processing.core.*;
 import java.util.HashMap;
-import Contrato.EstadoJuego;
 
 public class SE_GestorGrafico {
   private SE_GestorPrincipal gp;
@@ -17,19 +15,19 @@ public class SE_GestorGrafico {
 
   public void cargarRecursos() {
     // Sprites de naves y enemigos
-    cargarImagen("Nave", "Imagenes/Super Etendard.png", 40, 0);
-    cargarImagen("SeaHarrier", "Imagenes/Sea Harrier FRS.1.png", 40, 0);
-    cargarImagen("WestlandLynx", "Imagenes/Westland Lynx.png", 40, 0);
-    cargarImagen("SeaKing", "Imagenes/Sea King HAS.5.png", 60, 0);
-    cargarImagen("FragataTipo21", "Imagenes/Fragata Tipo 21 Clase Amazon.png", 40, 0);
-    cargarImagen("AtlanticConveyor", "Imagenes/Atlantic Conveyor.png", 60, 0);
-    cargarImagen("HmsSheffield", "Imagenes/HMS Sheffield.png", 80, 0);
+    cargarImagen("Nave", "Super Etendard.png", 40, 0);
+    cargarImagen("SeaHarrier", "Sea Harrier FRS.1.png", 40, 0);
+    cargarImagen("WestlandLynx", "Westland Lynx.png", 40, 0);
+    cargarImagen("SeaKing", "Sea King HAS.5.png", 60, 0);
+    cargarImagen("FragataTipo21", "Fragata Tipo 21 Clase Amazon.png", 40, 0);
+    cargarImagen("AtlanticConveyor", "Atlantic Conveyor.png", 60, 0);
+    cargarImagen("HmsSheffield", "HMS Sheffield.png", 80, 0);
 
     // Fondos y decoraciones
-    cargarImagen("Fondo0", "Imagenes/Water.png", app.width, app.height);
-    cargarImagen("Fondo2", "Imagenes/Costa.png", app.width, app.height);
-    cargarImagen("Fondo3", "Imagenes/Costa2.png", app.width, app.height);
-    cargarImagen("Menu", "Imagenes/menu.png", app.width, app.height);
+    cargarImagen("Fondo0", "Water.png", app.width, app.height);
+    cargarImagen("Fondo2", "Costa.png", app.width, app.height);
+    cargarImagen("Fondo3", "Costa2.png", app.width, app.height);
+    cargarImagen("Menu", "menu.png", app.width, app.height);
   }
 
   public void cargarImagen(String id, String path, int resizeW, int resizeH) {
@@ -131,6 +129,7 @@ public class SE_GestorGrafico {
     app.textAlign(PApplet.RIGHT, PApplet.TOP);
     app.text("PHASE: " + faseActual, app.width - 10, 10);
     
+    /*
     if (gp != null && gp.entidades != null) {
       SE_Nave n = (SE_Nave) gp.entidades.getPrimeraNaveViva();
       if (n != null && n.hasDoubleShot()) {
@@ -139,6 +138,7 @@ public class SE_GestorGrafico {
         app.text("POWER UP!", app.width / 2.0f, 10);
       }
     }
+    */
   }
 
   public void dibujarPantallaPausa() {
@@ -152,7 +152,7 @@ public class SE_GestorGrafico {
     app.text("Presiona 'P' para continuar", app.width/2.0f, app.height/2.0f + 30);
   }
 
-  public void dibujarGameOver(String title, String subtitle, int estadoJuego, SE_GestorPrincipal sesion, Home.EstadisticasGenerales eg) {
+  public void dibujarGameOver(String title, String subtitle, int estadoJuego, SE_GestorPrincipal sesion, EstadisticasGenerales eg) {
     app.fill(0, 180);
     app.rect(app.width/2.0f, app.height/2.0f, app.width, app.height);
     if (estadoJuego == 3) app.fill(0, 255, 100);
@@ -191,7 +191,7 @@ public class SE_GestorGrafico {
   public void renderizarSegunEstado(EstadoJuego estado) {
     String nombre = estado.getNombre();
     switch (nombre) {
-      case "NO_INICIADO":
+      case "INICIANDO":
         dibujarFondo(0, gp.getDificultad(), SE_GestorPrincipal.FASE_INICIO);
         dibujarMenu(gp.getDificultad());
         break;

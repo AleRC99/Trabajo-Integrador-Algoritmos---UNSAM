@@ -1,4 +1,3 @@
-package Aviones.etendard;
 
 import java.util.ArrayList;
 
