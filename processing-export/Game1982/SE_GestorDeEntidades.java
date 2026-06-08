@@ -4,6 +4,7 @@ public class SE_GestorDeEntidades {
   public SE_GestorPrincipal gp;
   private ArrayList<SE_Nave>     listaNaves;
   private ArrayList<SE_Enemigo>  listaEnemigos;
+  private ArrayList<SE_Explosion> listaExplosiones; // explosion effects
   private ArrayList<SE_Proyectil> listaProyectiles;
 
   public SE_GestorDeEntidades(SE_GestorPrincipal gp) {
@@ -11,6 +12,7 @@ public class SE_GestorDeEntidades {
     listaNaves        = new ArrayList<SE_Nave>();
     listaProyectiles  = new ArrayList<SE_Proyectil>();
     listaEnemigos     = new ArrayList<SE_Enemigo>();
+    listaExplosiones = new ArrayList<SE_Explosion>();
   }
 
   public void vaciarTodo() {
@@ -46,25 +48,42 @@ public class SE_GestorDeEntidades {
       }
       e.dibujar();
       
-      // if (e.colisionaConNave()) {
-      //   for (SE_Nave n : listaNaves) {
-      //     if (n.vivo && hayColision(e, n)) {
-      //       n.morir();
-      //       e.morir();
-      //     }
-      //   }
-      // }
+      if (e.puedeColisionarConNave()) {
+        for (SE_Nave n : listaNaves) {
+            if (n.vivo && hayColision(e, n)) {
+              n.recibirDaño(1);
+              e.recibirDaño(1);
+            }
+        }
+      }
+      
+      // Control de salida de pantalla y derrota por escape del jefe
+      if (!pausado) {
+        processing.core.PApplet app = gp.getApp();
+        if (!e.isBoss) {
+          if (e.y > app.height + 100) {
+            e.morir();
+          }
+        } else {
+          if (e.y > app.height + e.alto / 2.0f) {
+            for (SE_Nave n : listaNaves) {
+              n.morir();
+            }
+            e.morir();
+          }
+        }
+      }
       
       for (int j = listaProyectiles.size() - 1; j >= 0; j--) {
         SE_Proyectil p = listaProyectiles.get(j);
         if (!p.esAliado) continue; 
         boolean hit = hayColision(e, p);
-        if (hit) {
-          e.morir();
-          listaProyectiles.remove(j);
-          if (!e.vivo) manejarMuerteEnemigo(e);
-          break; 
-        }
+          if (hit) {
+            e.recibirDaño(1);
+            listaProyectiles.remove(j);
+            if (!e.vivo) manejarMuerteEnemigo(e);
+            break; 
+          }
       }
       
       if (!e.vivo) listaEnemigos.remove(i);
@@ -77,10 +96,10 @@ public class SE_GestorDeEntidades {
       
       if (!p.esAliado) {
         for (SE_Nave n : listaNaves) {
-          if (n.vivo && hayColision(p, n)) {
-            n.morir();
-            p.morir();
-          }
+            if (n.vivo && hayColision(p, n)) {
+              n.recibirDaño(1);
+              p.morir();
+            }
         }
       }
       if (!p.vivo) listaProyectiles.remove(i);
@@ -92,7 +111,18 @@ public class SE_GestorDeEntidades {
         n.dibujar(); 
       }
     }
-  }
+      // Update and draw explosions
+    if (listaExplosiones != null) {
+        for (int i = listaExplosiones.size() - 1; i >= 0; i--) {
+            SE_Explosion exp = listaExplosiones.get(i);
+            exp.actualizar();
+            exp.dibujar();
+            if (!exp.estaViva()) {
+                listaExplosiones.remove(i);
+            }
+        }
+    }
+}
 
   void manejarMuerteEnemigo(SE_Enemigo e) {
     if (gp == null) return;
@@ -106,6 +136,14 @@ public class SE_GestorDeEntidades {
        gp.registrarVictoria();
     }
   }
+
+    // Create an explosion effect at given coordinates
+    public void crearExplosion(float x, float y) {
+        if (listaExplosiones == null) {
+            listaExplosiones = new ArrayList<SE_Explosion>();
+        }
+        listaExplosiones.add(new SE_Explosion(this, x, y));
+    }
 
   private boolean hayColision(SE_Objeto a, SE_Objeto b) {
     if (a == null || b == null) return false;

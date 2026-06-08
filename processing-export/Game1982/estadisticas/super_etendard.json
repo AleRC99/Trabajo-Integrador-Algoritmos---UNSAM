@@ -1,9 +1,9 @@
 {
   "nombreModulo": "super_etendard",
-  "puntajeTotal": 115100,
-  "partidasJugadas": 10,
-  "partidasGanadas": 4,
-  "partidasPerdidas": 6,
-  "enemigosDestruidos": 72,
-  "tiempoJugadoSegundos": 274
+  "puntajeTotal": 213100,
+  "partidasJugadas": 61,
+  "partidasGanadas": 19,
+  "partidasPerdidas": 42,
+  "enemigosDestruidos": 614,
+  "tiempoJugadoSegundos": 1176
 }

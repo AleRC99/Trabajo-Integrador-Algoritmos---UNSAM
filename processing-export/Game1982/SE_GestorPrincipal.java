@@ -7,19 +7,20 @@ import java.util.List;
 /**
  * GestorPrincipal (Core Engine)
  * Orquesta la lógica interna del juego 1942 (Super Etendard).
- * Ya no implementa ModuloJuego, se comunica con el Lobby a través de la fachada SE_ModuloEtendard.
+ * Ya no implementa ModuloJuego, se comunica con el Lobby a través de la fachada
+ * SE_ModuloEtendard.
  */
 public class SE_GestorPrincipal {
 
     // Constantes de estado del juego 1942 (usadas en GestorGrafico)
     public static final int ESTADO_GAMEOVER = 2;
-    public static final int ESTADO_WIN      = 3;
+    public static final int ESTADO_WIN = 3;
 
     // Sub-sistemas del juego
     protected SE_GestorDeEntidades entidades;
-    protected SE_GestorDeNivel     nivel;
-    protected SE_GestorGrafico     graficos;
-    
+    protected SE_GestorDeNivel nivel;
+    protected SE_GestorGrafico graficos;
+
     // Estadísticas e Input
     private SE_HistorialSesion historial;
     private SE_InputManager inputManager;
@@ -31,7 +32,7 @@ public class SE_GestorPrincipal {
     // Instancia de PApplet para Processing
     private final PApplet app;
     public boolean victoriaRegistrada = false;
-    
+
     // Estado interno para la lógica de ejecución (ahora lo pasa la fachada)
     private EstadoJuego estadoCicloVida;
 
@@ -62,7 +63,7 @@ public class SE_GestorPrincipal {
         }
         return historial.exportarEstadisticas(nombreModulo);
     }
-    
+
     public boolean isVictoriaRegistrada() {
         return victoriaRegistrada;
     }
@@ -82,9 +83,11 @@ public class SE_GestorPrincipal {
         }
     }
 
-    // ── Métodos para la ejecución interceptada desde el Home ────────────────────────
+    // ── Métodos para la ejecución interceptada desde el Home
+    // ────────────────────────
 
-    // Método invocado automáticamente por Processing para delegar los eventos de teclado
+    // Método invocado automáticamente por Processing para delegar los eventos de
+    // teclado
     public void keyEvent(processing.event.KeyEvent event) {
         if (estadoCicloVida instanceof NoIniciadoState || estadoCicloVida instanceof FinalizadoState) {
             return; // Ignorar teclas si no somos el módulo activo
@@ -92,7 +95,7 @@ public class SE_GestorPrincipal {
 
         char k = event.getKey();
         int kCode = event.getKeyCode();
-        
+
         if (event.getAction() == processing.event.KeyEvent.PRESS) {
             procesarKeyPressed(k, kCode);
         } else if (event.getAction() == processing.event.KeyEvent.RELEASE) {
@@ -141,7 +144,7 @@ public class SE_GestorPrincipal {
     }
 
     // --- Getters / Setters Auxiliares ---
-    
+
     public PApplet getApp() {
         return app;
     }
@@ -158,5 +161,6 @@ public class SE_GestorPrincipal {
         return historial;
     }
 
-    // Las estadísticas ahora se acceden directamente a través del historial de sesión
+    // Las estadísticas ahora se acceden directamente a través del historial de
+    // sesión
 }

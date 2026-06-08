@@ -28,7 +28,7 @@ public class SE_GestorDeNivel {
         int intervaloActual = 60;
 
         // Spawneo de Enemigos Básicos si aún no llegamos al Boss
-        if (!bossSpawned) {
+ if (!bossSpawned) {
             if (tiempoNivel % intervaloActual == 0) {
                 entidades.agregarEnemigo(new SE_EnemigoBasico(entidades, app.random(50, app.width - 50), -30));
             }
@@ -39,7 +39,9 @@ public class SE_GestorDeNivel {
             if (scoreActual >= SCORE_PARA_BOSS) {
                 // Limpiamos la pantalla de enemigos menores para la épica pelea
                 entidades.vaciarEnemigos(); 
-                entidades.agregarEnemigo(new SE_HmsSheffield(entidades, app.width / 2.0f, -200));
+                // Spawn the boss relative to the current viewport so it's visible
+                float spawnY = app.height * 0.15f; // 15% from top of the screen
+                entidades.agregarEnemigo(new SE_HmsSheffield(entidades, app.width / 2.0f, spawnY));
                 bossSpawned = true;
                 System.out.println("[GestorDeNivel] Boss spawneado al alcanzar " + SCORE_PARA_BOSS + " puntos.");
             }
